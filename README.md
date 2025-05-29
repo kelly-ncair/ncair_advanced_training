@@ -48,4 +48,9 @@
    - Syntax to commit: `git commit -m "{ADD A COMMENT FOR THE CHANGES MADE}"`
 
 6. Push our branch to the repository.
+
    - Syntax to push: `git push origin {OUR BRANCH NAME}`
+
+7. Git Forget Memory.
+   - Syntax to revert everything. `git rm -r --cached .`
+   - Syntax to revert a specific file. `git rm -r --cached {FILENAME}`
