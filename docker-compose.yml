@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    ports:
+      - "4200:4200"
+    # depends_on:
+    #   - mysql
+    #   - ollama
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ncair_api
+    ports:
+      - "3308:3306"
+    command:
+      [
+        "mysqld",
+        "--character-set-server=latin1",
+        "--collation-server=latin1_swedish_ci",
+      ]
+    volumes:
+      - ncair_db_data:/var/lib/mysql
+
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   command: ["ollama", "pull", "llama3.2"]
+
+volumes:
+  ncair_db_data:
+
+  # mysql:
+  #   image: mysql:latest
+
+  # ollama:
+  #   image: ollama/ollama:latest
+# Docker Compose commands
+
+# 1. Build: docker-compose build math (You can only build when there is a Dockerfile present for that specific service)
+# 2. Run in the background: docker-compose up -d
+# 3. Check logs: docker-compose logs -f math
+
