@@ -37,3 +37,15 @@
      - Syntax: `git branch --show-current` - this is used on an entirely new repository that has not been committed yet. `git branch` is used for committed repositories.
    - Update the Local Git Memory with the Repository's Memory. `git fetch`
    - Get all the resources from the Parent branch into our own branch. `git pull origin {PARENT BRANCH}`
+
+4. Add our branch's resources into Git's Memory.
+
+   - Syntax to add all files: `git add .`
+   - Syntax to add a single file: `git add {FILENAME}`
+
+5. Commit our branch's added resources to Git's Memory. This is to provide assurance to Git.
+
+   - Syntax to commit: `git commit -m "{ADD A COMMENT FOR THE CHANGES MADE}"`
+
+6. Push our branch to the repository.
+   - Syntax to push: `git push origin {OUR BRANCH NAME}`
