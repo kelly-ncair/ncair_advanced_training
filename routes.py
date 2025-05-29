@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-
+# Route to create a user
 @app.route("/create_user", methods=["POST"])
 def register_user():
     
