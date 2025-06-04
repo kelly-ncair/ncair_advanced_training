@@ -21,10 +21,10 @@ Create a file named `.env` in the project root with the following content (adjus
 
 ```ini
 DB_USER=root
-DB_PASSWORD=Abdulwahab2401
-DB_NAME=ncair
-DB_HOST=db
-DB_PORT=3306
+DB_PASSWORD=[MYSQL_DATABASE_PASS]
+DB_NAME=[MYSQL_DATABASE_NAME]
+DB_HOST=db [YOUR HOST]
+DB_PORT=3306 [YOUR INTERNAL DB PORT ~ MYSQL DEFAULT: 3306]
 ```
 
 These environment variables are used by both the application and the Docker Compose setup.
@@ -208,4 +208,3 @@ You’re now ready to run and test the NCAIR API Training App from the **Owad** 
 3. `docker-compose up` is running without failures.
 4. Migrations have been applied (`alembic upgrade head`).
 
-Happy coding!
