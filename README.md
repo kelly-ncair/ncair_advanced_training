@@ -208,3 +208,4 @@ You’re now ready to run and test the NCAIR API Training App from the **Owad** 
 3. `docker-compose up` is running without failures.
 4. Migrations have been applied (`alembic upgrade head`).
 
+**Yours Truly, Yisau Abdulwahab (AgtOwad)**
