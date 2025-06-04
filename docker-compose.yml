@@ -1,0 +1,73 @@
+#version: "3.8"
+
+services:
+  math:
+    build: .
+    ports:
+      - "4200:4200"
+
+  # this below is our sql server located in docker
+  db: # is a server on its own that asks you to create password for you root and maybe a default db name
+    image: mysql # remember you have to always password it because if anyone in the world has access to your ip address also have access database  
+            # there is something in docker, another element in the service, it gives you the ability to provide env variables r
+    environment: 
+      MYSQL_ROOT_PASSWORD: monipede #this only needs you to provide mysql root password and also the default database
+      MYSQL_DATABASE: ncair_api
+    ports: #4200 is the external port. anyone can access it. 3306 is the container's port, which is the mysql port which is used universally. so if you want to access it externally you have to use port 4200
+    - "4200:3306"  # the 4200 is our own custom port for our machine, which can always be changed.
+# every server needs a port like the math server has a port of 4200. 
+# my sql by default, there main port is 3306, but if we want to use another port within our system, we suppose to set it 
+    command: ["mysqld", "--character-set-server=latin1", "--collation-server=latin1_swedish_c1"] #["executable", "arg"] # or command: ["mysqld", "--character-set-server=latin1", "--collation-server=latin1_swedish_c1"] i.e. with a default latin 1
+# mysqld is a command in my sql to run the server. to spin up the server. all from the terminal *** :)
+# whenever we build the mysql (pulling), we need to be able to start mysql server. that's where the command comes in :) 
+# because without this command, we would have the downloadable vrsion of mysql, but it is idle. it is not running on your system :)
+#they are certain of mysql that allows json data, some doesn't, others text. so it is important you know what you plan on sending
+# in order protect yourselves from this you need to add a collation server and a character set.
+# once I pull mysql server, this is the command that would run 
+
+
+# now, to be able to maintain the data that i have, even in situations when the docker crashes, when normally should lead to rebuilding from the scratch again to get this 'lost' data **
+# so right now we are going to build a database that contains user's name, information and password. so we need to be abkle to maintain that when the docker crashes and this data are lost
+# so we use volumes :) 
+    volumes:
+      - ncair_db_data:/var/lib/mysql # this is the volume name. it is suppose to be done outside this services (hence the follow up is an indentation principle :)
+# so this volume would contain all our data in this path
+volumes:
+  ncair_db_data: # this will have my sql information from the past :)
+
+# now all we have to do is to build this server :)
+
+# although you can't use docker build here, because whenever you are using it, it must have its own docker file
+# and also it has no build as said earlier on, we are pulling it from it own database
+#  we can only run it as docker-compose up -d db
+
+# USING docker to install a database server, focusing of having mysql server using docker instead of manually downloading
+
+# Next class is building our database table, then we put that inside our api
+# creating a virtual server through Docker
+
+
+
+
+
+    # depends_on:
+    #   - mysql
+    #   - ollama
+
+  # mysql:
+  #   image: mysql:latest
+
+  # ollama:
+  #   image: ollama/ollama:latest
+# Docker Compose commands
+
+# 1. Build: docker-compose build math (You can only build when there's a DockerFile present for that specific serv .... like 'math')
+# 2. Run in the background: docker-compose up -d
+# 3. Check logs: docker-compose logs -f math (to check if certain serv are already built using Docker )
+
+
+# so after this we have our database running in our machine :)
+# volumes in docker is like backups
+
+# you can check volumes using: docker volume ls
+# its like a backup :)

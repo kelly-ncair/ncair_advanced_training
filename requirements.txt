@@ -1,0 +1,12 @@
+flask
+flask-cors
+pymysql # this would help our python project connect to any my sql server or connection
+alembic  # used to create automation for your tables in the db without the manual creation you are always doing. 
+# it checks the history of your db and see something that does not exists and you want it to exists
+
+sqlalchemy # this contains all the variety of sql.. i.e. mysql, mssql, sqlite
+# you can use sqlalchemy to carry out different CRUD to a table. it is so smart to do that across different database. it learns all the operations across different sql variants and puts it into one
+# we also this to create a connection
+python-dotenv
+# so basically for 'sqlalchemy' to work which in itself is the parent class, it needs to have a child class installed i.e. 'pymysql'.
+# and this child class determination depends on the database  we are connecting to, which for us here is mysql from dockermgh
