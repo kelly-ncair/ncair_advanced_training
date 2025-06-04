@@ -1,0 +1,7 @@
+flask
+flask-cors
+pymysql
+alembic
+sqlalchemy
+python-dotenv
+cryptography

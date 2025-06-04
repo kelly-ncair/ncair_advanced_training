@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "3308:3306"
+    command:
+      [
+        "mysqld",
+        "--character-set-server=latin1",
+        "--collation-server=latin1_swedish_ci",
+      ]
+    volumes:
+      - db_data:/var/lib/mysql
+  math:
+    build: .
+    ports:
+      - "4200:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+volumes:
+  db_data:
+
