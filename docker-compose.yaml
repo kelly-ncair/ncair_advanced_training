@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: "mysql+pymysql://root:password@db:3306/ncair_api"
+    depends_on:
+      # MODIFIED: Wait for the 'db' service to be healthy
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ncair_api
+    ports:
+      - "3308:3306"
+    command:
+      [
+        "mysqld",
+        "--character-set-server=latin1",
+        "--collation-server=latin1_swedish_ci",
+      ]
+    volumes:
+      - ncair_db_data:/var/lib/mysql
+    # ADDED: Healthcheck section
+    healthcheck:
+      # This command checks if MySQL is responding to pings
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword"]
+      interval: 10s     # Check every 10 seconds
+      timeout: 5s       # Wait up to 5 seconds for a check to respond
+      retries: 5        # Try 5 times before marking as unhealthy
+      start_period: 30s # Wait 30s after start before first check (gives time to init)
+
+volumes:
+  ncair_db_data:
