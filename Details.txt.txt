@@ -1,0 +1,34 @@
+Overview:
+This is a simple REST API built using Flask. It allows client applications to register users by sending a POST request with user data in JSON format.
+
+Features:
+- POST /create_user endpoint
+- Accepts JSON payload: name, email, password, phoneNumber
+- Performs basic validation
+- Calls create_user() function from crud.py
+- CORS enabled for cross-origin requests
+- Error handling included
+
+Endpoint:
+POST /create_user
+
+Request JSON:
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "mypassword",
+  "phoneNumber": "1234567890"
+}
+
+Responses:
+- Success: { "message": "User created successfully", "user_id": "123" }
+- Missing fields: { "message": "Please provide all entries" }
+- Error: { "error": "Error details" }
+
+To Run:
+1. Install dependencies: pip install Flask flask-cors
+2. Run app: python app.py
+3. Access at: http://0.0.0.0:4200
+
+Note:
+The create_user() function should be defined in crud.py and handle the database logic.
