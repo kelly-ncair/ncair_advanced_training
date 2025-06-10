@@ -1,10 +1,7 @@
 from sqlalchemy import create_engine
 
-# MYSQL URL STANDARD = "mysql+pymysql://{ROOT_USERNAME}:{ROOT_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
+# Engine is the main object that connects to the database externally
+# engine = create_engine("mysql+pymysql://root:password@localhost:4409/ncair_apk")
 
-# WHEN CONNECTING TO THE DOCKER MYSQL SERVER EXTERNALLY
-engine = create_engine("mysql+pymysql://root:password@localhost:3308/ncair_api")
-
-
-# WHEN CONNECTING TO THE DOCKER MYSQL SERVER INTERNALLY
-# engine = create_engine("mysql+pymysql://root:password@db:3306/ncair_api")
+# Engine is the main object that connects to the database internally
+engine = create_engine("mysql+pymysql://root:password@dbase:3306/ncair_apk")
