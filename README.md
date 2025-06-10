@@ -58,7 +58,7 @@ This branch houses the code and configuration for the National Center for Artifi
    ```
 
    * **dbase** (MySQL) will run on port `4409` (host) → `3306` (container).
-   * **api** (the API service) will build from `Dockerfile` and listen on port `4000` (host) → `3000` (container).
+   * **api** (the API service) will build from `Dockerfile` and listen on port `4000` (host) → `2000` (container).
 
 
 2. **Apply database migrations**
