@@ -1,56 +1,88 @@
-# ALEMBIC CLI OPERATIONS
+# NCAIR Training: RESTful API • Docker • Alembic • CRUD
 
-## Initialize alembic
+**Branch:** `dayo_db/ncair_advanced_training`
 
-- Command -> `alembic init alembic`
+This branch houses the code and configuration for the National Center for Artificial Intelligence and Robotics (NCAIR) hands-on training, focusing on building a RESTful API service with full CRUD operations, schema migrations via Alembic, and containerization with Docker.
 
-## Generate a version
+---
 
-- Command -> `alembic revision --autogenerate -m "create user table"`
+## Tech Stack
 
-## Commit the version changes to the database
+- **Python 3.10+**  
+- **Flask** – high-performance REST framework  
+- **SQLAlchemy** – ORM for database modeling  
+- **Alembic** – database migrations  
+- **MySQL** – relational database  
+- **Docker & Docker Compose** – containerization and orchestration  
 
-- Command -> `alembic upgrade head`
+---
 
-## GIT COMMANDS
+## Features
 
-1. .gitignore. This file hides unnecessary folders/files or secret files from Github.
+- **CRUD Operations via API Access** for a sample resource (e.g., `Item`, `User`)
+- **Alembic Migrations** to version and evolve the database schema
+- **Dockerized Services** including API app and PostgreSQL
 
-2. Cloning a Repository.
 
-   - Existing Project.
+---
 
-     - cd into the project
-     - Intialize Git. `git init`
-     - Check your current repository. `git remote -v`
-     - Assign your project to a repository. `git remote add "origin" {REPOSITORY URL}`
+## Prerequisites
 
-   - No Project.
-     - cd into your directory.
-     - Syntax: `git clone https://{USERNAME}:{TOKEN}@{HTTPS REPOSITORY URL}`
+- Docker & Docker Compose installed  
+- Git (to checkout this branch)  
+- (Optional) Python 3.10+ & virtualenv, if running locally without Docker  
 
-3. Repository Resource Alignment.
+---
 
-   - Create our own child branch.
-     - Syntax: `git checkout -b {BRANCH NAME}` - creating a new branch
-   - Check what branch you are working on.
-     - Syntax: `git branch --show-current` - this is used on an entirely new repository that has not been committed yet. `git branch` is used for committed repositories.
-   - Update the Local Git Memory with the Repository's Memory. `git fetch`
-   - Get all the resources from the Parent branch into our own branch. `git pull origin {PARENT BRANCH}`
+## Installation & Setup
 
-4. Add our branch's resources into Git's Memory.
+1. **Clone just the `dayo_db` branch**
 
-   - Syntax to add all files: `git add .`
-   - Syntax to add a single file: `git add {FILENAME}`
+ ```bash
+   git clone --branch dayo_db https://github.com/kelly-ncair/ncair_advanced_training.git
+   cd ncair_advanced_training
+   ```
 
-5. Commit our branch's added resources to Git's Memory. This is to provide assurance to Git.
+2. **Verify you are on `dayo_db`**
 
-   - Syntax to commit: `git commit -m "{ADD A COMMENT FOR THE CHANGES MADE}"`
+   ```bash
+   git branch --show-current
+   ```
 
-6. Push our branch to the repository.
+## Running with Docker Compose (Recommended)
 
-   - Syntax to push: `git push origin {OUR BRANCH NAME}`
+1. **Start services**
 
-7. Git Forget Memory.
-   - Syntax to revert everything. `git rm -r --cached .`
-   - Syntax to revert a specific file. `git rm -r --cached {FILENAME}`
+   ```bash
+   docker-compose up --build
+   ```
+
+   * **dbase** (MySQL) will run on port `4409` (host) → `3306` (container).
+   * **api** (the API service) will build from `Dockerfile` and listen on port `4000` (host) → `3000` (container).
+
+
+2. **Apply database migrations**
+   In a new terminal (while `docker-compose` is running), run:
+
+   ```bash
+   docker-compose exec math alembic upgrade head
+   ```
+
+   This creates the necessary tables in the `ncair_db` database.
+
+3. **Access the API**
+   The API is now available at:
+
+   ```
+   http://localhost:4000/
+   ```
+
+   Use Postman, curl, or any HTTP client to test endpoints defined in `routes.py` (e.g., `GET /api/v1/...`, `POST /api/v1/...`).
+
+4. **Stop services**
+
+   ```bash
+   docker-compose down
+   ```
+
+---
