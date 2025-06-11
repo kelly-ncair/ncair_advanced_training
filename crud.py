@@ -11,21 +11,24 @@ Session = sessionmaker(bind=engine)
 ## C= Create, R=Read, U=Update and D=Delete
 
 def create_user(name, email, password, phoneNumber):
+    if not name or not email or not password or not phoneNumber:
+        raise ValueError("Please provide all entries")
     
     session = Session()
-    
     try:
         exists = session.query(User).filter(User.email == email).first()
         
         if exists:
-            raise Exception(str("User exists"))
-        else:
-             new_user = User(name = name, email = email, password = password, phoneNumber = phoneNumber)
-             session.add(new_user)
-             session.commit()
-             return new_user.to_dict()
+            raise ValueError({"message": "User already exists"})
+
+        new_user = User(name=name, email=email, password=password, phoneNumber=phoneNumber)
+        session.add(new_user)
+        session.commit()
+        session.refresh(new_user)
+        return new_user
     except Exception as e:
-        raise Exception(str(e))
+        session.rollback()
+        raise
     finally:
         session.close()
         
@@ -36,22 +39,37 @@ def read_users():
          users = session.query(User).all()
          return users
      except Exception as e:
-         raise Exception(str(e))
+         raise e
      finally:
+         session.close()
+
+         
+def read_user(id):
+    if not id:
+        raise ValueError({"message": "Please provide an id"})
+    
+    session = Session()
+    try:
+        user = session.query(User).filter(User.id == id).first()
+        if not user:
+            raise ValueError({"message": "User not found"})
+        return user
+    except Exception as e:
+        session.rollback()
+        raise
+    finally:
          session.close()
          
 
-def update_user(id, name=None, password=None, phoneNumber=None):
+def update_user(id, name=None, password=None, phoneNumber=None, email=None):
     session = Session()
-    
     if not id:
-        raise Exception(str("Please provide id"))
-    
+        raise ValueError({"message": "Please provide an id"})
     try:
         user = session.query(User).filter(User.id == id).first()
         
         if not user:
-            raise Exception(str("User doesnt exist"))
+            raise ValueError({"message": "User not found"})
         
         if name:
             user.name = name
@@ -61,13 +79,16 @@ def update_user(id, name=None, password=None, phoneNumber=None):
             
         if phoneNumber:
             user.phoneNumber = phoneNumber
+        
+        if email:
+            user.email = email
             
         session.commit()
-        
+        session.refresh(user)
         return user
-    
     except Exception as e:
-         raise Exception(str(e))
+         session.rollback()
+         raise
     finally:
          session.close()
          
@@ -75,7 +96,7 @@ def update_user(id, name=None, password=None, phoneNumber=None):
 def delete_user(id):
     
     if not id:
-        raise Exception(str("Please provide an id"))
+        raise ValueError({"message": "Please provide an id"})
     
     session = Session()
     
@@ -83,16 +104,15 @@ def delete_user(id):
         user = session.query(User).filter(User.id == id).first()
         
         if not user:
-            raise Exception(str("User not found"))
+            raise ValueError({"message": "User not found"})
 
         session.delete(user)
-        
         session.commit()
-        
         return True
     
     except Exception as e:
-         raise Exception(str(e))
+        session.rollback()
+        raise
     finally:
          session.close()
          
