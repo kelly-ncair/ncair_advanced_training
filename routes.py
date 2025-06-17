@@ -6,7 +6,7 @@ from main import addition, subtraction
 
 from connection import engine
 from models import Base
-import crud
+from crud import users, posts
 
 
 max_attempts = 30
@@ -48,7 +48,7 @@ def chk_numbers(data):
     return x_val, y_val, None
 
 
-
+## Maths Route
 @app.route("/addition", methods=["POST"])
 def additionRoute():
     # 1. Request for parameters needed
@@ -80,11 +80,12 @@ def subtractRoute():
 
 
 
+## --- Users Routes ---
 @app.route("/create_user", methods=["POST"])
 def create_user():
     data = request.get_json() or {}
     try:
-        user = crud.create_user(
+        user = users.create_user(
             name = data.get("name"),
             email = data.get("email"),
             password = data.get("password"),
@@ -100,7 +101,7 @@ def create_user():
 @app.route("/read_users", methods=["GET"])
 def read_users():
     try:
-        users = crud.read_users()
+        users = users.read_users()
         return jsonify([{"id": u.id, "name": u.name, "email": u.email, "phoneNumber": u.phoneNumber} for u in users]), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -111,7 +112,7 @@ def get_user():
     data = request.get_json() or {}
     try:
         id = data.get("id")
-        user = crud.read_user(id)
+        user = users.read_user(id)
         if not user:
             return jsonify({"error": "User not found"}), 404
         return jsonify({"id": user.id, "name": user.name, "email": user.email, "phoneNumber": user.phoneNumber}), 200
@@ -125,7 +126,7 @@ def update_user():
     data = request.get_json() or {}
     try:
         id = data.get("id")
-        user = crud.update_user(id=id, name=data.get("name"), password=data.get("password"), phoneNumber=data.get("phoneNumber"), email=data.get("email"))
+        user = users.update_user(id=id, name=data.get("name"), password=data.get("password"), phoneNumber=data.get("phoneNumber"), email=data.get("email"))
         return jsonify({"id": user.id, "name": user.name, "email": user.email, "phoneNumber": user.phoneNumber}), 200
     except KeyError as e:
         return jsonify({"error": str(e)}), 400
@@ -140,8 +141,8 @@ def delete_user():
     data = request.get_json() or {}
     try:
         id = data.get("id")
-        user = crud.read_user(id)
-        tgt_user = crud.delete_user(id)
+        user = users.read_user(id)
+        tgt_user = users.delete_user(id)
         user_name = user.name
         if tgt_user:
             return jsonify({"message": f"User {user_name} with id: {id} deleted"}), 200
@@ -149,6 +150,9 @@ def delete_user():
             return jsonify({"error": "User not found"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
+## --- Posts Routes ---
 
 
 if __name__ == "__main__":
