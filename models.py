@@ -24,6 +24,7 @@ class Post(Base):
     content = Column(Text)
     category = Column(String(50))
     published_at = Column(DateTime)
+    updated_at = Column(DateTime)
     
     author = relationship("User", back_populates="posts")
       
