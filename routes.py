@@ -101,8 +101,8 @@ def create_user():
 @app.route("/read_users", methods=["GET"])
 def read_users():
     try:
-        users = users.read_users()
-        return jsonify([{"id": u.id, "name": u.name, "email": u.email, "phoneNumber": u.phoneNumber} for u in users]), 200
+        usrs = users.read_users()
+        return jsonify([{"id": u.id, "name": u.name, "email": u.email, "phoneNumber": u.phoneNumber} for u in usrs]), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -153,6 +153,82 @@ def delete_user():
 
 
 ## --- Posts Routes ---
+@app.route("/create_post", methods=["POST"])
+def create_post():
+    data = request.get_json() or {}
+    try:
+
+        post = posts.create_post(user_id = data.get("user_id"),
+                                password = data.get("password"),
+                                title = data.get("title"),
+                                description= data.get("description"))
+        if post is None:
+            return jsonify({"error": "Could not create post"}), 400
+        
+        return jsonify({"user_id": post.user_id, "post_id": post.post_id, "title": post.title, "description": post.description}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+
+@app.route("/read_posts", methods=["GET"])
+def read_posts():
+    try:
+        psts = posts.read_posts()
+        return jsonify([{"user_id": p.user_id, "post_id": p.post_id,  "title": p.title, "description": p.description} for p in psts]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/get_post", methods=["GET"])
+def get_post():
+    data = request.get_json() or {}
+    try:
+        post_id = data.get("post_id")
+        post = posts.read_post(post_id)
+        if not post:
+            return jsonify({"error": "Article not found"}), 404
+        return jsonify({"post_id": post.post_id, "title": post.title, "description": post.description, "user_id": post.user_id}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/update_post", methods=["PUT", "PATCH"])
+def update_post():
+    data = request.get_json() or {}
+    try:
+        post = posts.update_post(post_id=data.get("post_id"),
+            user_id=data.get("user_id"),
+            password=data.get("password"),
+            title=data.get("title"),
+            description=data.get("description"))
+        
+        return jsonify({"user_id": post.user_id, "post_id": post.post_id, "title": post.title, "description": post.description}), 200
+    except KeyError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        msg = e if isinstance(e, str) else getattr(e, "message", str(e))
+        return jsonify({"error": msg}), 400
+
+
+@app.route("/delete_post", methods=["DELETE"])
+def delete_post():
+    data = request.get_json() or {}
+    try:
+        post = posts.read_post(post_id=data.get("post_id"))
+
+        tgt_post = posts.delete_post(post_id=data.get("post_id"),
+            user_id=data.get("user_id"),
+            password=data.get("password"))
+        
+        post_title = post.title
+        post_id = post.post_id
+        if tgt_post:
+            return jsonify({"message": f"Article '{post_title}' with id: '{post_id}' deleted"}), 200
+        else:
+            return jsonify({"error": "Article not found"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 
 if __name__ == "__main__":

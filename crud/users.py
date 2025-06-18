@@ -7,6 +7,19 @@ from connection import engine
 Session = sessionmaker(bind=engine)
 
 
+def authenticate_user(user_id, password):
+    session = Session()
+    if user_id:
+        user = session.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise None
+    
+    if user.password != password:
+        return None
+
+    return user
+
 # CRUD OPERATIONS
 ## C= Create, R=Read, U=Update and D=Delete
 
