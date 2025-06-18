@@ -13,7 +13,7 @@ def authenticate_user(user_id, password):
         user = session.query(User).filter(User.id == user_id).first()
 
     if not user:
-        raise None
+        return None
     
     if user.password != password:
         return None

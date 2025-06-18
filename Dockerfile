@@ -10,6 +10,8 @@ COPY . .
 # Install all the project packages
 RUN pip install -r requirements.txt
 
+# RUN alembic upgrade head
+
 # Spin up the server in the background
 CMD ["python", "routes.py"]
 
