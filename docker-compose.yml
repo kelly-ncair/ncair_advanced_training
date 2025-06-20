@@ -4,7 +4,11 @@ services:
   api:
     build: .
     ports:
-      - "4200:4200"
+      - "4800:4200"
+    env_file:
+      - .env.docker
+    environment:
+      - ENV_MODE=docker
     # depends_on:
     #   - mysql
     #   - ollama

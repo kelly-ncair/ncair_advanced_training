@@ -1,6 +1,6 @@
 
 from sqlalchemy.orm import sessionmaker
-from models import User
+from models import User, Post
 from connection import engine
 
 
@@ -39,6 +39,23 @@ def read_users():
          raise Exception(str(e))
      finally:
          session.close()
+         
+         
+def get_user(id):
+    session = Session()
+
+    try:
+        user = session.query(User).filter(User.id == id).first()
+
+        if not user:
+            raise Exception(str("User not found"))
+
+        return user.to_dict()
+
+    except Exception as e:
+        raise Exception(str(e))
+    finally:
+        session.close()
          
 
 def update_user(id, name=None, password=None, phoneNumber=None):
@@ -95,4 +112,29 @@ def delete_user(id):
          raise Exception(str(e))
     finally:
          session.close()
-         
+
+
+def create_post(user_id, title, description):
+    session = Session()
+    
+    try:
+        user = session.query(User).filter(User.id == user_id).first();
+        
+        if not user:
+            raise Exception(str("User not found"))
+        
+        post = Post(title=title, description=description, user_id=user_id)
+        
+        session.add(post)
+        session.commit()
+        
+        return post.to_dict()
+    
+    except Exception as e:
+        session.rollback()
+        raise Exception(str(e))
+    
+    finally:
+        session.close()
+    
+
