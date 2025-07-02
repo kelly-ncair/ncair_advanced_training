@@ -4,3 +4,4 @@ pymysql
 alembic
 sqlalchemy
 cryptography
+python-dotenv

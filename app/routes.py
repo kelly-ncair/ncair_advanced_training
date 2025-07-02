@@ -5,13 +5,14 @@ from connection import create_engine
 import time
 from dotenv import load_dotenv
 import os
+load_dotenv()
 
 env_mode = os.getenv('ENV_MODE')
 
 if env_mode == "local":
     load_dotenv(".env")
 else: load_dotenv(".env.docker")
-
+print(env_mode)
 # Get database configuration from environment variables
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')

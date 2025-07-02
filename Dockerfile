@@ -13,5 +13,6 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "routes.py"]
+CMD ["python", "app/routes.py"]
+
 

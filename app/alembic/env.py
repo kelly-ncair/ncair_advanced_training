@@ -7,6 +7,8 @@ from sqlalchemy import pool
 from alembic import context
 from models import Base
 
+load_dotenv()
+
 env_mode = os.getenv('ENV_MODE')
 
 if env_mode == "local":
@@ -23,6 +25,9 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_PORT')
 DB_NAME = os.getenv('DB_NAME')
+required_vars = [DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME]
+if not all(required_vars):
+    raise ValueError(f"Missing one or more required DB environment variables: {required_vars}")
 
 # Override sqlalchemy.url with environment variables
 config.set_main_option('sqlalchemy.url', f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")

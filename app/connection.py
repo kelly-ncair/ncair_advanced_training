@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 
 
 # Load environment variables
+load_dotenv()
 
 env_mode = os.getenv('ENV_MODE')
 
