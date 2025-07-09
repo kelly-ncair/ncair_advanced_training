@@ -27,3 +27,23 @@ class Post(Base):
 
     user = relationship("User", back_populates="posts")
     
+class Team(Base):
+    __tablename__ = "teams"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False, unique=True)
+    city = Column(String(100))
+    coach_name = Column(String(100))
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    players = relationship("Player", back_populates="team", cascade="all, delete-orphan")
+
+class Player(Base):
+    __tablename__ = "players"
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), unique=True, nullable=False)
+    name = Column(String(100), nullable=False)
+    position = Column(String(50))
+    age = Column(Integer)
+    jersey_number = Column(Integer, nullable=False, unique=True)
+    team_id = Column(Integer, ForeignKey('teams.id', ondelete="CASCADE"))
+
+    team = relationship("Team", back_populates="players")

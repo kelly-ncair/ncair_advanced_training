@@ -6,7 +6,7 @@ from main import addition, subtraction
 
 from connection import engine
 from models import Base
-from crud import users, posts
+from crud import users, posts, teams, players
 
 
 max_attempts = 30
@@ -230,6 +230,203 @@ def delete_post():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
+## --- Teams Routes ---
+@app.route("/create_team", methods=["POST"])
+def create_team():
+    data = request.get_json() or {}
+    try:
+        team = teams.create_team(
+            name       = data.get("name"),
+            city       = data.get("city"),
+            coach_name = data.get("coach_name"),
+        )
+        if team is None:
+            return jsonify({"error": "Could not create team"}), 400
+        return jsonify({
+            "id":         team.id,
+            "name":       team.name,
+            "city":       team.city,
+            "coach_name": team.coach_name
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/read_teams", methods=["GET"])
+def read_teams():
+    try:
+        tms = teams.read_teams()
+        return jsonify([
+            {
+                "id":         t.id,
+                "name":       t.name,
+                "city":       t.city,
+                "coach_name": t.coach_name
+            }
+            for t in tms
+        ]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/get_team", methods=["GET"])
+def get_team():
+    data = request.get_json() or {}
+    try:
+        id   = data.get("id")
+        team = teams.read_team(id)
+        if not team:
+            return jsonify({"error": "Team not found"}), 404
+        return jsonify({
+            "id":         team.id,
+            "name":       team.name,
+            "city":       team.city,
+            "coach_name": team.coach_name
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/update_team", methods=["PUT", "PATCH"])
+def update_team():
+    data = request.get_json() or {}
+    try:
+        id   = data.get("id")
+        team = teams.update_team(
+            id         = id,
+            name       = data.get("name"),
+            city       = data.get("city"),
+            coach_name = data.get("coach_name")
+        )
+        return jsonify({
+            "id":         team.id,
+            "name":       team.name,
+            "city":       team.city,
+            "coach_name": team.coach_name
+        }), 200
+    except KeyError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        msg = e if isinstance(e, str) else getattr(e, "message", str(e))
+        return jsonify({"error": msg}), 400
+
+@app.route("/delete_team", methods=["DELETE"])
+def delete_team():
+    data = request.get_json() or {}
+    try:
+        id        = data.get("id")
+        team      = teams.read_team(id)
+        deleted   = teams.delete_team(id)
+        team_name = team.name
+        if deleted:
+            return jsonify({"message": f"Team {team_name} with id: {id} deleted"}), 200
+        else:
+            return jsonify({"error": "Team not found"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+## --- Players Routes ---
+@app.route("/create_player", methods=["POST"])
+def create_player():
+    data = request.get_json() or {}
+    try:
+        player = players.create_player(
+            name          = data.get("name"),
+            position      = data.get("position"),
+            age           = data.get("age"),
+            jersey_number = data.get("jersey_number"),
+            team_id       = data.get("team_id"),
+        )
+        if player is None:
+            return jsonify({"error": "Could not create player"}), 400
+        return jsonify({
+            "id":            player.id,
+            "name":          player.name,
+            "position":      player.position,
+            "age":           player.age,
+            "jersey_number": player.jersey_number,
+            "team_id":       player.team_id
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/read_players", methods=["GET"])
+def read_players():
+    try:
+        pls = players.read_players()
+        return jsonify([
+            {
+                "id":            p.id,
+                "name":          p.name,
+                "position":      p.position,
+                "age":           p.age,
+                "jersey_number": p.jersey_number,
+                "team_id":       p.team_id
+            }
+            for p in pls
+        ]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/get_player", methods=["GET"])
+def get_player():
+    data = request.get_json() or {}
+    try:
+        id     = data.get("id")
+        player = players.read_player(id)
+        if not player:
+            return jsonify({"error": "Player not found"}), 404
+        return jsonify({
+            "id":            player.id,
+            "name":          player.name,
+            "position":      player.position,
+            "age":           player.age,
+            "jersey_number": player.jersey_number,
+            "team_id":       player.team_id
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/update_player", methods=["PUT", "PATCH"])
+def update_player():
+    data = request.get_json() or {}
+    try:
+        id     = data.get("id")
+        player = players.update_player(
+            id            = id,
+            name          = data.get("name"),
+            position      = data.get("position"),
+            age           = data.get("age"),
+            jersey_number = data.get("jersey_number"),
+            team_id       = data.get("team_id")
+        )
+        return jsonify({
+            "id":            player.id,
+            "name":          player.name,
+            "position":      player.position,
+            "age":           player.age,
+            "jersey_number": player.jersey_number,
+            "team_id":       player.team_id
+        }), 200
+    except KeyError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        msg = e if isinstance(e, str) else getattr(e, "message", str(e))
+        return jsonify({"error": msg}), 400
+
+@app.route("/delete_player", methods=["DELETE"])
+def delete_player():
+    data = request.get_json() or {}
+    try:
+        id         = data.get("id")
+        player     = players.read_player(id)
+        deleted    = players.delete_player(id)
+        player_name = player.name
+        if deleted:
+            return jsonify({"message": f"Player {player_name} with id: {id} deleted"}), 200
+        else:
+            return jsonify({"error": "Player not found"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=3000)
