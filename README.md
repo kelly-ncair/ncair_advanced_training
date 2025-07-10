@@ -54,3 +54,15 @@
 7. Git Forget Memory.
    - Syntax to revert everything. `git rm -r --cached .`
    - Syntax to revert a specific file. `git rm -r --cached {FILENAME}`
+
+## CERTBOT
+
+- Helps lock your website so that it's safe. This converts it to a HTTPS protocol.
+- It generates for you an SSL certificate
+
+## NGINX
+
+- Helps run your website fast and smart
+- It maps your github project to a domain(example.com)
+- Example if your project is running on port 4200, nginx will transfer that specific port to a domain along with the ip address
+- Nginx would map -> http://209.38.155.89:4200 to http://example.com. Certbot will transform it to https://example.com
