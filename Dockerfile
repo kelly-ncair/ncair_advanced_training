@@ -1,5 +1,5 @@
 # Use Python programing language (python:3.9-slim is the most stable version of python)
-FROM python:3.9-slim
+FROM python:3.9-buster
 
 # Set a working directory for our project
 WORKDIR /app
