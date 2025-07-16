@@ -6,6 +6,11 @@ app = Flask(__name__)
 
 CORS(app)
 
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Welcome to the Flask API!"})
+
 # Route to create a user
 @app.route("/create_user", methods=["POST"])
 def register_user():

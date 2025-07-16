@@ -66,3 +66,15 @@
 - It maps your github project to a domain(example.com)
 - Example if your project is running on port 4200, nginx will transfer that specific port to a domain along with the ip address
 - Nginx would map -> http://209.38.155.89:4200 to http://example.com. Certbot will transform it to https://example.com
+
+## NGINX + CERTBOT commands
+
+# Installations
+
+- sudo apt install certbot nginx python3-certbot-nginx
+
+- sudo certbot --nginx -d example.com
+
+- sudo nginx -t (This check for any syntax errors)
+
+- sudo systemctl restart nginx
