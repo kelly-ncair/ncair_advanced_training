@@ -3,24 +3,31 @@ from sqlalchemy.exc import OperationalError
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from main import addition, subtraction
-
+import os, time, mysql.connector
 from connection import engine
 from models import Base
 from crud import users, posts, teams, players
 
 
+
+
 max_attempts = 30
-for attempt in range(1, max_attempts + 1):
+for attempt in range(1, max_attempts+1):
     try:
-        conn = engine.connect()
-        conn.close()
-        print(f"Database is up (on attempt {attempt})")
+        conn = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            port=int(os.getenv("DB_PORT")),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
+        )
+        print("✅ Connected on attempt", attempt)
         break
-    except OperationalError:
-        print(f"Database not ready (attempt {attempt}/{max_attempts}), retrying")
-        time.sleep(1)
+    except Exception as e:
+        print(f"❌ Attempt {attempt}/{max_attempts} failed:", e)
+        time.sleep(2)
 else:
-    raise RuntimeError(f"Could not connect to the database after {max_attempts} attempts")
+    raise RuntimeError(f"Could not connect after {max_attempts} attempts")
 
 Base.metadata.create_all(bind=engine)
 
