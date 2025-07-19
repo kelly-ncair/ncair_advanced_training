@@ -5,3 +5,4 @@ alembic
 sqlalchemy
 cryptography
 python-dotenv
+mysql-connector-python

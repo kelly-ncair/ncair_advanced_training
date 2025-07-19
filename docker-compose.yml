@@ -5,25 +5,24 @@ services:
     container_name: company_staff
     build: .
     ports:
-      - "4000:2000"
+      - "4090:2000"
     env_file:
       - .env.docker
     environment:
       - ENV_MODE=docker
-    depends_on:
-      - dbase
+    restart: on-failure
 
-  dbase:
-    container_name: company_staff_db
-    image: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: company_staff_apk
-    ports:
-      - "4409:3306"
-    command: [ "mysqld", "--character-set-server=latin1", "--collation-server=latin1_swedish_ci" ]
-    volumes:
-      - company_staff_db_data:/var/lib/mysql
+# dbase:
+#   container_name: company_staff_db
+#   image: mysql
+#   environment:
+#     MYSQL_ROOT_PASSWORD: password
+#     MYSQL_DATABASE: company_staff_apk
+#   ports:
+#     - "4409:3306"
+#   command: [ "mysqld", "--character-set-server=latin1", "--collation-server=latin1_swedish_ci" ]
+#   volumes:
+#     - company_staff_db_data:/var/lib/mysql
 
 volumes:
   company_staff_db_data:

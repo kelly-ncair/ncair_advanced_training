@@ -5,6 +5,9 @@ from connection import create_engine
 import time
 from dotenv import load_dotenv
 import os
+import mysql.connector
+from models import Base
+from connection import engine
 load_dotenv()
 
 env_mode = os.getenv('ENV_MODE')
@@ -21,23 +24,33 @@ DB_PORT = os.getenv('DB_PORT')
 DB_NAME = os.getenv('DB_NAME')
 
 # Create database URL
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 app = Flask(__name__)
 CORS(app)
 
-# wait for the DB to be up
-for _ in range(10):
+
+max_attempts = 5
+for attempt in range(1, max_attempts+1):
     try:
-        engine = create_engine(DATABASE_URL)
-        engine.connect()
+        conn = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            port=int(os.getenv("DB_PORT")),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
+        )
+        print("✅ Connected on attempt", attempt)
         break
-    except Exception:
-        time.sleep(3)
+    except Exception as e:
+        # password=os.getenv("DB_PASSWORD")
+        # print(password)
+        print(f"❌ Attempt {attempt}/{max_attempts} failed:", e)
+        time.sleep(2)
 else:
-    raise RuntimeError("Could not connect to the database after 10 tries.")
+    raise RuntimeError(f"Could not connect after {max_attempts} attempts")
 
-
+Base.metadata.create_all(bind=engine)
 
 # Company CRUD API
 @app.route("/create_company", methods=["POST"])
